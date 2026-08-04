@@ -37,6 +37,16 @@
       font-size: 0.85em;
       margin: 2px 0;
     }
+    .rupture-stock {
+      color: red;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-top: 6px;
+      border: 1px solid red;
+      border-radius: 4px;
+      padding: 4px 0;
+      background: #ffecec;
+    }
     .client-select, .total, .export {
       text-align: center;
       margin-top: 20px;
@@ -89,10 +99,10 @@
       { id: 26, nom: "SCG RAY01", prix: 250, image: "images/scg-ray01.png", categorie: "Stickers" },
       { id: 27, nom: "SCG TOR01", prix: 250, image: "images/scg-tor01.png", categorie: "Stickers" },
       { id: 76, nom: "SC TOR01", prix: 250, image: "images/sc-tor01.png", categorie: "Stickers" },
-    //  { id: 28, nom: "01(LEZ02)(Stock = 4)", prix: 50, image: "images/01-lez02.png", categorie: "Tatouages" },
+      { id: 28, nom: "01(LEZ02)(Stock = 0)", prix: 50, image: "images/01-lez02.png", categorie: "Tatouages" },
       { id: 29, nom: "02 (RAI01)", prix: 50, image: "images/02-rai01.png", categorie: "Tatouages" },
       { id: 30, nom: "03 (TOR02)", prix: 50, image: "images/03-tor02.png", categorie: "Tatouages" },
-   //   { id: 31, nom: "07 (RAI03)(Stock = 6)", prix: 50, image: "images/07-rai03.png", categorie: "Tatouages" },
+      { id: 31, nom: "07 (RAI03)(Stock = 0)", prix: 50, image: "images/07-rai03.png", categorie: "Tatouages" },
       { id: 32, nom: "09 (LEZ01)(Stock = 9)", prix: 50, image: "images/09-lez01.png", categorie: "Tatouages" },
       { id: 33, nom: "10 (TOR03)", prix: 50, image: "images/10-tor03.png", categorie: "Tatouages" },
       { id: 34, nom: "11 (NAU)", prix: 50, image: "images/11-nau.png", categorie: "Tatouages" },
@@ -112,7 +122,7 @@
       { id: 49, nom: "DECRO-MAG RAI03", prix: 350, image: "images/decro-mag-rai03.png", categorie: "Décapsuleurs" },
       { id: 50, nom: "REMAG BO CAG01", prix: 300, image: "images/remag-bo-cag01.png", categorie: "Décapsuleurs" },
       { id: 51, nom: "COA-FLE01", prix: 100, image: "images/coa-fle01.png", categorie: "Coasters" },
- //     { id: 52, nom: "COA-HIB02 (Stock = 8)", prix: 100, image: "images/coa-hib02.png", categorie: "Coasters" },
+      { id: 52, nom: "COA-HIB02 (Stock = 0)", prix: 100, image: "images/coa-hib02.png", categorie: "Coasters" },
       { id: 54, nom: "COA-RAI03", prix: 100, image: "images/coa-rai03.png", categorie: "Coasters" },
       { id: 55, nom: "COA-CAG01", prix: 100, image: "images/coa-cag01.png", categorie: "Coasters" },
       { id: 56, nom: "COA-PAT01", prix: 100, image: "images/coa-pat01.png", categorie: "Coasters" },
@@ -144,22 +154,22 @@
       { id: 85, nom: "PC DL FLE01", prix: 125, image: "images/pc-dl-fle01.png", categorie: "Porte clés" },
       { id: 86, nom: "PC DL TOR03", prix: 125, image: "images/pc-dl-tor03.png", categorie: "Porte clés" },
       { id: 87, nom: "PC DL RAI03", prix: 125, image: "images/pc-dl-rai03.png", categorie: "Porte clés" },
-    //  { id: 91, nom: "PCR06 (Stock = 15)", prix: 200, image: "images/pcr06.png", categorie: "Porte clés" },
-     // { id: 92, nom: "PCR08 (Stock = 8)", prix: 200, image: "images/pcr08.png", categorie: "Porte clés" },
-     // { id: 93, nom: "PCR09 (Stock = 3)", prix: 200, image: "images/pcr09.png", categorie: "Porte clés" },
+      { id: 91, nom: "PCR06 (Stock = 0)", prix: 200, image: "images/pcr06.png", categorie: "Porte clés" },
+      { id: 92, nom: "PCR08 (Stock = 0)", prix: 200, image: "images/pcr08.png", categorie: "Porte clés" },
+      { id: 93, nom: "PCR09 (Stock = 0)", prix: 200, image: "images/pcr09.png", categorie: "Porte clés" },
       { id: 95, nom: "PCR11 (Stock = 44)", prix: 200, image: "images/pcr11.png", categorie: "Porte clés" },
       { id: 96, nom: "PCR12 (Stock = 9)", prix: 200, image: "images/pcr12.png", categorie: "Porte clés" },
       { id: 97, nom: "PC TOR01", prix: 150, image: "images/pc-tor01.png", categorie: "Porte clés" },
       { id: 98, nom: "PC TOR03", prix: 150, image: "images/pc-tor03.png", categorie: "Porte clés" },
       { id: 99, nom: "PC RAI03", prix: 150, image: "images/pc-rai03.png", categorie: "Porte clés" },
-     // { id: 100, nom: "PCM02 (Stock = 5)", prix: 250, image: "images/pcm02.png", categorie: "Porte clés" },
+      { id: 100, nom: "PCM02 (Stock = 0)", prix: 250, image: "images/pcm02.png", categorie: "Porte clés" },
       { id: 102, nom: "PCM05 (Stock = 8)", prix: 250, image: "images/pcm05.png", categorie: "Porte clés" },
       { id: 103, nom: "PCM07 (Stock = 5)", prix: 250, image: "images/pcm07.png", categorie: "Porte clés" },
       { id: 104, nom: "PCM08 (Stock = 28)", prix: 250, image: "images/pcm08.png", categorie: "Porte clés" },
       { id: 105, nom: "PCM09 (Stock = 4)", prix: 250, image: "images/pcm09.png", categorie: "Porte clés" },
-   //   { id: 106, nom: "PCM11 (Stock = 2)", prix: 250, image: "images/pcm11.png", categorie: "Porte clés" },
+      { id: 106, nom: "PCM11 (Stock = 0)", prix: 250, image: "images/pcm11.png", categorie: "Porte clés" },
       { id: 107, nom: "PCM12 (Stock = 17)", prix: 250, image: "images/pcm12.png", categorie: "Porte clés" },
-    //  { id: 108, nom: "PCM16 (Stock = 18)", prix: 250, image: "images/pcm16.png", categorie: "Porte clés" },
+      { id: 108, nom: "PCM16 (Stock = 0)", prix: 250, image: "images/pcm16.png", categorie: "Porte clés" },
       { id: 110, nom: "ART0091(mag bois RAI03)", prix: 250, image: "images/art0091-mag-bois-rai03.png", categorie: "Magnets" },
       { id: 111, nom: "ART0093(mag bois TOR03)", prix: 250, image: "images/art0093-mag-bois-tor03.png", categorie: "Magnets" },
       { id: 112, nom: "Mag DL FLE01", prix: 125, image: "images/mag-dl-fle01.png", categorie: "Magnets" },
@@ -210,25 +220,25 @@
       { id: 159, nom: "COL12 (tripleB)", prix: 300, image: "images/col12-tripleb.png", categorie: "Colliers" },
       { id: 160, nom: "COL13 (Dau m)", prix: 300, image: "images/col13-dau-m.png", categorie: "Colliers" },
       { id: 161, nom: "COL14 (Dau b)", prix: 300, image: "images/col14-dau-b.png", categorie: "Colliers" },
-  //    { id: 162, nom: "COL15 (hook m)", prix: 300, image: "images/col15-hook-m.png", categorie: "Colliers" },
+      { id: 162, nom: "COL15 (hook m)(Stock = 0)", prix: 300, image: "images/col15-hook-m.png", categorie: "Colliers" },
       { id: 163, nom: "COL16 (Hook b)", prix: 300, image: "images/col16-hook-b.png", categorie: "Colliers" },
       { id: 164, nom: "COL17 (Tail M)", prix: 300, image: "images/col17-tail-m.png", categorie: "Colliers" },
       { id: 165, nom: "COL18 (TAIL B)", prix: 300, image: "images/col18-tail-b.png", categorie: "Colliers" },
       { id: 166, nom: "COL GL FISH (Stock = 43)", prix: 450, image: "images/col-gl-fish.png", categorie: "Colliers" },
       { id: 167, nom: "COL GL Hippo (Stock = 27)", prix: 450, image: "images/col-gl-hippo.png", categorie: "Colliers" },
       { id: 168, nom: "Plaque 01 (boho)(Stock = 14)", prix: 1800, image: "images/plaque-01-boho.png", categorie: "Bracelets" },
-    //  { id: 169, nom: "Plaque 06 (white beads)(Stock = 3)", prix: 1800, image: "images/plaque-06-white-beads.png", categorie: "Bracelets" },
+      { id: 169, nom: "Plaque 06 (white beads)(Stock = 0)", prix: 1800, image: "images/plaque-06-white-beads.png", categorie: "Bracelets" },
       { id: 170, nom: "Plaque 07 (starfish)(Stock = 1)", prix: 1800, image: "images/plaque-07-starfish.png", categorie: "Bracelets" },
-    //  { id: 171, nom: "Plaque 08 (colored beads)(Stock = 2)", prix: 1800, image: "images/plaque-08-colored-beads.png", categorie: "Bracelets" },
+      { id: 171, nom: "Plaque 08 (colored beads)(Stock = 0)", prix: 1800, image: "images/plaque-08-colored-beads.png", categorie: "Bracelets" },
       { id: 173, nom: "Métal 1 (Stock = 35)", prix: 300, image: "images/metal-1.png", categorie: "Bracelets" },
       { id: 174, nom: "Métal 2 (Stock = 40)", prix: 300, image: "images/metal-2.png", categorie: "Bracelets" },
       { id: 175, nom: "Métal 3 (Stock = 12)", prix: 300, image: "images/metal-3.png", categorie: "Bracelets" },
       { id: 176, nom: "Bracelet dent (Stock = 21)", prix: 300, image: "images/bradent.png", categorie: "Bracelets" },
-    //  { id: 177, nom: "Bracelet tortue 1 (Stock = 14)", prix: 300, image: "images/brasimplem.png", categorie: "Bracelets" },
+      { id: 177, nom: "Bracelet tortue 1 (Stock = 0)", prix: 300, image: "images/brasimplem.png", categorie: "Bracelets" },
       { id: 178, nom: "Bracelet tortue 2 (Stock = 27)", prix: 300, image: "images/bravidem.png", categorie: "Bracelets" },
       { id: 179, nom: "Bracelet tortue blanche (Stock = 68)", prix: 300, image: "images/braturtlebig.png", categorie: "Bracelets" },
-    //  { id: 181, nom: "S Tortue (Stock = 1)", prix: 1000, image: "images/S-Tortue.png", categorie: "Produits gravés" },
-    //  { id: 182, nom: "S Nautile (Stock = 2)", prix: 1000, image: "images/S-Nautile.png", categorie: "Produits gravés" },
+      { id: 181, nom: "S Tortue (Stock = 0)", prix: 1000, image: "images/S-Tortue.png", categorie: "Produits gravés" },
+      { id: 182, nom: "S Nautile (Stock = 0)", prix: 1000, image: "images/S-Nautile.png", categorie: "Produits gravés" },
       { id: 189, nom: "L Nautile (Stock = 8)", prix: 2500, image: "images/M-Nautile.png", categorie: "Produits gravés" },
       { id: 190, nom: "L Tortue (Stock = 2)", prix: 2500, image: "images/L-Tortue.png", categorie: "Produits gravés" },
       { id: 191, nom: "L Cagou (Stock = 4)", prix: 2500, image: "images/L-Cagou.png", categorie: "Produits gravés" },
@@ -276,6 +286,7 @@
 
           const stock = extraireStock(produit.nom);
           const nomAffiche = nettoyerNom(produit.nom);
+          const enRupture = stock === 0;
 
           const nom = document.createElement("div");
           nom.textContent = nomAffiche;
@@ -283,18 +294,11 @@
           const prix = document.createElement("div");
           prix.textContent = produit.prix + " CFP";
 
-          const input = document.createElement("input");
-          input.type = "number";
-          input.min = "0";
-          input.value = "0";
-          input.className = "quantity-input";
-          input.dataset.id = produit.id;
-          input.addEventListener("input", calculerTotal);
-
           div.appendChild(img);
           div.appendChild(nom);
 
-          if (stock !== null) {
+          // Affiche le stock restant uniquement s'il est > 0 (info indicative)
+          if (stock !== null && stock > 0) {
             const stockDiv = document.createElement("div");
             stockDiv.className = "stock-info";
             stockDiv.textContent = "Stock : " + stock;
@@ -302,7 +306,24 @@
           }
 
           div.appendChild(prix);
-          div.appendChild(input);
+
+          if (enRupture) {
+            // Produit visible mais non commandable
+            const ruptureDiv = document.createElement("div");
+            ruptureDiv.className = "rupture-stock";
+            ruptureDiv.textContent = "RUPTURE DE STOCK";
+            div.appendChild(ruptureDiv);
+          } else {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.min = "0";
+            input.value = "0";
+            input.className = "quantity-input";
+            input.dataset.id = produit.id;
+            input.addEventListener("input", calculerTotal);
+            div.appendChild(input);
+          }
+
           zone.appendChild(div);
         });
 
