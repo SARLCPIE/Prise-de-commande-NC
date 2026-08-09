@@ -20,17 +20,52 @@
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
+      align-items: stretch; /* toutes les cartes de la ligne s'étirent à la même hauteur */
     }
     .produit {
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 10px;
       width: 160px;
+      /* hauteur fixe : c'est ce qui rend toutes les cartes identiques */
+      height: 300px;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    .produit-image {
+      width: 100%;
+      height: 90px;               /* zone image fixe, même taille pour tous */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 6px;
+      flex-shrink: 0;
     }
     .produit img {
-      width: 100%;
-      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;        /* l'image garde ses proportions sans déformer la grille */
+    }
+    .produit-nom {
+      font-size: 0.9em;
+      min-height: 2.6em;          /* réserve toujours la place de 2 lignes, même si le nom est court */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .produit-prix {
+      font-weight: bold;
+      margin: 4px 0;
+      flex-shrink: 0;
+    }
+    .produit-bas {
+      margin-top: auto;           /* pousse toujours le bloc quantité/rupture tout en bas de la carte */
+      flex-shrink: 0;
     }
     .stock-info {
       color: red;
@@ -40,12 +75,16 @@
     .rupture-stock {
       color: red;
       font-weight: bold;
-      font-size: 0.9em;
+      font-size: 0.85em;
       margin-top: 6px;
       border: 1px solid red;
       border-radius: 4px;
-      padding: 4px 0;
+      padding: 4px 2px;
       background: #ffecec;
+    }
+    .quantity-input {
+      width: 60px;
+      margin-top: 6px;
     }
     .client-select, .total, .export {
       text-align: center;
@@ -274,39 +313,46 @@
           const div = document.createElement("div");
           div.className = "produit";
 
+          // Zone image à taille fixe
+          const imgWrap = document.createElement("div");
+          imgWrap.className = "produit-image";
           const img = document.createElement("img");
           img.src = produit.image;
           img.alt = produit.nom;
+          imgWrap.appendChild(img);
 
           const stock = extraireStock(produit.nom);
           const nomAffiche = nettoyerNom(produit.nom);
           const enRupture = stock === 0;
 
           const nom = document.createElement("div");
+          nom.className = "produit-nom";
           nom.textContent = nomAffiche;
 
           const prix = document.createElement("div");
+          prix.className = "produit-prix";
           prix.textContent = produit.prix + " CFP";
 
-          div.appendChild(img);
+          div.appendChild(imgWrap);
           div.appendChild(nom);
+          div.appendChild(prix);
 
-          // Affiche le stock restant uniquement s'il est > 0 (info indicative)
+          // Bloc du bas (stock/quantité ou rupture) toujours aligné en bas de la carte
+          const bas = document.createElement("div");
+          bas.className = "produit-bas";
+
           if (stock !== null && stock > 0) {
             const stockDiv = document.createElement("div");
             stockDiv.className = "stock-info";
             stockDiv.textContent = "Stock : " + stock;
-            div.appendChild(stockDiv);
+            bas.appendChild(stockDiv);
           }
 
-          div.appendChild(prix);
-
           if (enRupture) {
-            // Produit visible mais non commandable
             const ruptureDiv = document.createElement("div");
             ruptureDiv.className = "rupture-stock";
             ruptureDiv.textContent = "REASSORT EN COURS";
-            div.appendChild(ruptureDiv);
+            bas.appendChild(ruptureDiv);
           } else {
             const input = document.createElement("input");
             input.type = "number";
@@ -315,9 +361,10 @@
             input.className = "quantity-input";
             input.dataset.id = produit.id;
             input.addEventListener("input", calculerTotal);
-            div.appendChild(input);
+            bas.appendChild(input);
           }
 
+          div.appendChild(bas);
           zone.appendChild(div);
         });
 
