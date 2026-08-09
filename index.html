@@ -25,10 +25,9 @@
     .produit {
       border: 1px solid #ccc;
       border-radius: 8px;
-      padding: 10px;
-      width: 160px;
-      /* hauteur fixe : c'est ce qui rend toutes les cartes identiques */
-      height: 300px;
+      padding: 8px;
+      width: 150px;
+      /* pas de hauteur fixe : la carte s'étire seulement autant que nécessaire */
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -36,12 +35,12 @@
     }
     .produit-image {
       width: 100%;
-      height: 90px;               /* zone image fixe, même taille pour tous */
+      height: 150px;              /* zone image plus grande, même taille pour tous */
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       flex-shrink: 0;
     }
     .produit img {
@@ -50,8 +49,9 @@
       object-fit: contain;        /* l'image garde ses proportions sans déformer la grille */
     }
     .produit-nom {
-      font-size: 0.9em;
-      min-height: 2.6em;          /* réserve toujours la place de 2 lignes, même si le nom est court */
+      font-size: 0.85em;
+      line-height: 1.2;
+      min-height: 2.1em;          /* réserve la place de 2 lignes courtes seulement */
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -60,12 +60,13 @@
     }
     .produit-prix {
       font-weight: bold;
-      margin: 4px 0;
+      margin: 2px 0;
       flex-shrink: 0;
     }
     .produit-bas {
       margin-top: auto;           /* pousse toujours le bloc quantité/rupture tout en bas de la carte */
       flex-shrink: 0;
+      padding-top: 4px;
     }
     .stock-info {
       color: red;
