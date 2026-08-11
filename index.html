@@ -87,6 +87,10 @@
       width: 60px;
       margin-top: 6px;
     }
+    .quantity-input.qty-error {
+      border: 1px solid red;
+      background: #ffecec;
+    }
     .client-select, .total, .export {
       text-align: center;
       margin-top: 20px;
@@ -361,8 +365,24 @@
             input.value = "0";
             input.className = "quantity-input";
             input.dataset.id = produit.id;
-            input.addEventListener("input", calculerTotal);
+            // Si un stock est affiché, on empêche de commander plus que ce stock
+            if (stock !== null && stock > 0) {
+              input.max = stock;
+              input.dataset.maxStock = stock;
+            }
+            input.addEventListener("input", function () {
+              limiterQuantite(this);
+              calculerTotal();
+            });
             bas.appendChild(input);
+
+            const erreurDiv = document.createElement("div");
+            erreurDiv.className = "qty-error-msg";
+            erreurDiv.style.color = "red";
+            erreurDiv.style.fontSize = "0.75em";
+            erreurDiv.style.display = "none";
+            erreurDiv.textContent = "Quantité max atteinte";
+            bas.appendChild(erreurDiv);
           }
 
           div.appendChild(bas);
@@ -372,6 +392,29 @@
         section.appendChild(zone);
         container.appendChild(section);
       }
+    }
+
+    // Empêche de saisir une quantité supérieure au stock disponible (quand un stock est affiché)
+    function limiterQuantite(input) {
+      const max = input.dataset.maxStock ? parseInt(input.dataset.maxStock) : null;
+      let valeur = parseInt(input.value);
+
+      if (isNaN(valeur) || valeur < 0) {
+        valeur = 0;
+      }
+
+      const erreurDiv = input.parentElement.querySelector(".qty-error-msg");
+
+      if (max !== null && valeur > max) {
+        valeur = max;
+        if (erreurDiv) erreurDiv.style.display = "block";
+        input.classList.add("qty-error");
+      } else {
+        if (erreurDiv) erreurDiv.style.display = "none";
+        input.classList.remove("qty-error");
+      }
+
+      input.value = valeur;
     }
 
     function calculerTotal() {
