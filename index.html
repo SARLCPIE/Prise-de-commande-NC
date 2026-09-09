@@ -63,6 +63,16 @@
       margin: 2px 0;
       flex-shrink: 0;
     }
+    .produit-prix .prix-remise {
+      color: #1a7a1a;
+    }
+    .produit-prix .prix-barre {
+      text-decoration: line-through;
+      color: #888;
+      font-weight: normal;
+      font-size: 0.9em;
+      margin-right: 4px;
+    }
     .produit-bas {
       margin-top: auto;           /* pousse toujours le bloc quantité/rupture tout en bas de la carte */
       flex-shrink: 0;
@@ -98,6 +108,28 @@
     .total {
       font-weight: bold;
     }
+    .remise-info {
+      text-align: center;
+      color: #1a7a1a;
+      font-weight: normal;
+      font-size: 0.9em;
+      margin-top: 4px;
+    }
+    .categorie-remise {
+      text-align: center;
+      font-size: 0.8em;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 16px;
+    }
+    .regle-remise-ligne {
+      display: inline-block;
+      margin: 2px 10px;
+    }
+    .regle-remise-ligne.active {
+      color: #1a7a1a;
+      font-weight: bold;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -110,6 +142,7 @@
 
   <div id="produitsContainer"></div>
   <div class="total" id="total">Total : 0 CFP</div>
+  <div class="remise-info" id="remiseInfo"></div>
   <div class="export">
     <button onclick="exportPDF()">Exporter en PDF</button>
     <button onclick="envoyerCommande()">Envoyer la commande</button>
@@ -167,7 +200,7 @@
       { id: 50, nom: "REMAG BO CAG01",ref: "REMAG_BO_CAG01",  prix: 300, image: "images/remag-bo-cag01.png", categorie: "Décapsuleurs" },
       { id: 51, nom: "COA-FLE01",ref: "Coaster_FLE_01",  prix: 100, image: "images/coa-fle01.png", categorie: "Coasters" },
       { id: 52, nom: "COA-HIB02 (Stock = 0)",ref: "Coaster_Hib02",  prix: 100, image: "images/coa-hib02.png", categorie: "Coasters" },
-      { id: 52, nom: "COA-TOR04 (Stock = 0)",ref: "Coaster_TOR04",  prix: 100, image: "images/coa-tor04.png", categorie: "Coasters" },
+      { id: 27, nom: "COA-TOR04 (Stock = 0)",ref: "Coaster_TOR04",  prix: 100, image: "images/coa-tor04.png", categorie: "Coasters" },
       { id: 53, nom: "COA-LEZ03 (Stock = 0)",ref: "Coaster_LEZ03",  prix: 100, image: "images/coa-lez03.png", categorie: "Coasters" },
       { id: 54, nom: "COA-RAI03",ref: "Coaster_RAI03",  prix: 100, image: "images/coa-rai03.png", categorie: "Coasters" },
       { id: 55, nom: "COA-CAG01",ref: "Coaster_CAG01",  prix: 100, image: "images/coa-cag01.png", categorie: "Coasters" },
@@ -291,6 +324,76 @@
   <script>
     const container = document.getElementById("produitsContainer");
     const totalEl = document.getElementById("total");
+    const remiseInfoEl = document.getElementById("remiseInfo");
+
+    // ===== Règles de remise automatique par palier =====
+    // Chaque règle s'applique à un sous-ensemble de produits (catégorie +
+    // prix normal, éventuellement affiné par le nom). Dès que la quantité
+    // totale commandée sur ce sous-ensemble (tous modèles confondus)
+    // atteint le seuil, le prix unitaire de CHACUN de ces produits passe
+    // au prix remisé, pour toute la commande.
+    const REGLES_REMISE = [
+      { id: "stickers120", categorie: "Stickers", prixNormal: 120, seuil: 200, prixRemise: 100, noteLabel: "Stickers à 120 CFP" },
+      { id: "stickers400", categorie: "Stickers", prixNormal: 400, seuil: 100, prixRemise: 325, noteLabel: "Stickers à 400 CFP" },
+      { id: "stickers250", categorie: "Stickers", prixNormal: 250, seuil: 100, prixRemise: 210, noteLabel: "Stickers à 250 CFP" },
+      { id: "decapsuleurs350", categorie: "Décapsuleurs", prixNormal: 350, seuil: 100, prixRemise: 300, noteLabel: "Décapsuleurs à 350 CFP" },
+      { id: "sousverre_liege", categorie: "Coasters", prixNormal: 100, seuil: 500, prixRemise: 85, noteLabel: "Sous-verres liège à 100 CFP" },
+      { id: "sousplat_liege", categorie: "Dessous de plat", prixNormal: 500, seuil: 100, prixRemise: 425, noteLabel: "Sous-plats liège à 500 CFP" },
+      { id: "sousverre_bois", categorie: "Coasters", prixNormal: 1200, seuil: 20, prixRemise: 1000, noteLabel: "Set sous-verres bois à 1200 CFP" },
+      { id: "miroirs", categorie: "Miroirs", prixNormal: 300, seuil: 100, prixRemise: 250, noteLabel: "Miroirs à 300 CFP" },
+      { id: "eventails", categorie: "Eventails", prixNormal: 500, seuil: 100, prixRemise: 425, noteLabel: "Eventails à 500 CFP" },
+      { id: "porte_cles_metal", categorie: "Porte clés", prixNormal: 350, seuil: 100, prixRemise: 300, noteLabel: "Porte-clés métal à 350 CFP" },
+      { id: "magnet_metal_cagou", categorie: "Magnets", prixNormal: 350, seuil: 50, prixRemise: 300, noteLabel: "Magnet métal cagou à 350 CFP" },
+      { id: "magnets_resine", categorie: "Magnets", prixNormal: 250, seuil: 200, prixRemise: 210, noteLabel: "Magnets à 250 CFP" },
+      { id: "packs_shooters", categorie: "Shooters", prixNormal: 600, seuil: 150, prixRemise: 510, noteLabel: "Packs Shooters à 600 CFP" },
+      { id: "colliers_resine", categorie: "Colliers", prixNormal: 300, seuil: 100, prixRemise: 250, noteLabel: "Colliers résine à 300 CFP" },
+      { id: "bracelets300", categorie: "Bracelets", prixNormal: 300, seuil: 100, prixRemise: 250, noteLabel: "Bracelets à 300 CFP" }
+    ];
+
+    // Renvoie la règle de remise applicable à un produit, ou null.
+    function trouverRegle(produit) {
+      return REGLES_REMISE.find(r =>
+        produit.categorie === r.categorie &&
+        produit.prix === r.prixNormal &&
+        (!r.filtreNom || r.filtreNom.test(produit.nom))
+      ) || null;
+    }
+
+    // Parcourt une seule fois les quantités saisies et calcule, pour
+    // chaque règle, la quantité totale commandée et si son seuil est
+    // atteint.
+    function calculerEtatsRemises() {
+      const compteurs = {};
+      REGLES_REMISE.forEach(r => { compteurs[r.id] = 0; });
+
+      document.querySelectorAll(".quantity-input").forEach(input => {
+        const id = parseInt(input.dataset.id);
+        const produit = produits.find(p => p.id === id);
+        const qte = parseInt(input.value) || 0;
+        if (!produit || qte <= 0) return;
+        const regle = trouverRegle(produit);
+        if (regle) compteurs[regle.id] += qte;
+      });
+
+      const etats = {};
+      REGLES_REMISE.forEach(r => {
+        etats[r.id] = {
+          quantiteTotale: compteurs[r.id],
+          active: compteurs[r.id] >= r.seuil
+        };
+      });
+      return etats;
+    }
+
+    // Retourne le prix unitaire effectif d'un produit compte tenu des
+    // remises actuellement actives.
+    function prixUnitaireEffectif(produit, etatsRemises) {
+      const regle = trouverRegle(produit);
+      if (regle && etatsRemises[regle.id].active) {
+        return regle.prixRemise;
+      }
+      return produit.prix;
+    }
 
     function extraireStock(nom) {
       const match = nom.match(/\(\s*Stock\s*=\s*(\d+)\s*\)/i);
@@ -314,6 +417,21 @@
         const titre = document.createElement("h2");
         titre.textContent = categorie;
         section.appendChild(titre);
+
+        const reglesCategorie = REGLES_REMISE.filter(r => r.categorie === categorie);
+        if (reglesCategorie.length > 0) {
+          const noteDiv = document.createElement("div");
+          noteDiv.className = "categorie-remise";
+          reglesCategorie.forEach(r => {
+            const ligne = document.createElement("span");
+            ligne.className = "regle-remise-ligne";
+            ligne.id = "regle-ligne-" + r.id;
+            ligne.textContent = r.noteLabel + " : dès " + r.seuil + " unités → " +
+              r.prixRemise + " CFP/u (au lieu de " + r.prixNormal + " CFP)";
+            noteDiv.appendChild(ligne);
+          });
+          section.appendChild(noteDiv);
+        }
 
         const zone = document.createElement("div");
         zone.className = "produits";
@@ -340,6 +458,11 @@
 
           const prix = document.createElement("div");
           prix.className = "produit-prix";
+          prix.dataset.prixNormal = produit.prix;
+          const regleProduit = trouverRegle(produit);
+          if (regleProduit) {
+            prix.dataset.regleId = regleProduit.id;
+          }
           prix.textContent = produit.prix + " CFP";
 
           div.appendChild(imgWrap);
@@ -421,16 +544,75 @@
       input.value = valeur;
     }
 
+    // Met à jour l'affichage du prix unitaire barré/remisé sur chaque carte
+    // produit concernée par une règle, en fonction de l'état de la remise.
+    function mettreAJourAffichagePrix(etatsRemises) {
+      document.querySelectorAll('.produit-prix[data-regle-id]').forEach(prixDiv => {
+        const regle = REGLES_REMISE.find(r => r.id === prixDiv.dataset.regleId);
+        if (!regle) return;
+        const etat = etatsRemises[regle.id];
+        if (etat && etat.active) {
+          prixDiv.innerHTML =
+            '<span class="prix-barre">' + regle.prixNormal + ' CFP</span>' +
+            '<span class="prix-remise">' + regle.prixRemise + ' CFP</span>';
+        } else {
+          prixDiv.textContent = regle.prixNormal + " CFP";
+        }
+      });
+    }
+
+    // Met à jour, sous chaque titre de catégorie, le surlignage des règles
+    // actives (sans afficher de compteur numérique).
+    function mettreAJourNotesCategories(etatsRemises) {
+      REGLES_REMISE.forEach(r => {
+        const ligne = document.getElementById('regle-ligne-' + r.id);
+        if (!ligne) return;
+        const etat = etatsRemises[r.id];
+        ligne.classList.toggle('active', etat.active);
+      });
+    }
+
+    // Met à jour le récapitulatif en bas de page : une ligne par règle
+    // active ("remise appliquée") ou en progression ("plus que X pour
+    // atteindre la remise"). Les règles sans quantité saisie restent
+    // muettes pour ne pas surcharger l'affichage.
+    function majRemiseInfoGlobale(etatsRemises) {
+      const lignes = [];
+      REGLES_REMISE.forEach(r => {
+        const etat = etatsRemises[r.id];
+        if (etat.active) {
+          lignes.push(
+            r.noteLabel + " : remise appliquée → " + r.prixRemise +
+            " CFP/u (" + etat.quantiteTotale + " unités)"
+          );
+        } else if (etat.quantiteTotale > 0) {
+          const restant = r.seuil - etat.quantiteTotale;
+          lignes.push(
+            r.noteLabel + " : plus que " + restant + " unité(s) pour atteindre " +
+            r.prixRemise + " CFP/u"
+          );
+        }
+      });
+      remiseInfoEl.innerHTML = lignes.join("<br>");
+    }
+
     function calculerTotal() {
+      const etats = calculerEtatsRemises();
       let total = 0;
       const inputs = document.querySelectorAll(".quantity-input");
       inputs.forEach(input => {
         const id = parseInt(input.dataset.id);
         const produit = produits.find(p => p.id === id);
         const qte = parseInt(input.value || "0");
-        total += qte * produit.prix;
+        const prixUnitaire = prixUnitaireEffectif(produit, etats);
+        total += qte * prixUnitaire;
       });
+
       totalEl.textContent = "Total : " + total + " CFP";
+
+      mettreAJourAffichagePrix(etats);
+      mettreAJourNotesCategories(etats);
+      majRemiseInfoGlobale(etats);
     }
 
     async function exportPDF() {
@@ -440,6 +622,7 @@
         return;
       }
 
+      const etats = calculerEtatsRemises();
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
@@ -455,7 +638,8 @@
           const id = parseInt(input.dataset.id);
           const produit = produits.find(p => p.id === id);
           const nomPropre = nettoyerNom(produit.nom);
-          const lineTotal = quantity * produit.prix;
+          const prixUnitaire = prixUnitaireEffectif(produit, etats);
+          const lineTotal = quantity * prixUnitaire;
           total += lineTotal;
           doc.text(`${nomPropre} x ${quantity} = ${lineTotal} CFP`, 10, y);
           y += 10;
@@ -465,6 +649,22 @@
           }
         }
       });
+
+      const reglesActives = REGLES_REMISE.filter(r => etats[r.id].active);
+      if (reglesActives.length > 0) {
+        y += 5;
+        if (y > 280) { doc.addPage(); y = 10; }
+        doc.text('Remises appliquées :', 10, y);
+        y += 8;
+        reglesActives.forEach(r => {
+          if (y > 280) { doc.addPage(); y = 10; }
+          doc.text(
+            `- ${r.noteLabel} (${etats[r.id].quantiteTotale} unités) -> ${r.prixRemise} CFP/u au lieu de ${r.prixNormal} CFP`,
+            10, y
+          );
+          y += 8;
+        });
+      }
 
       doc.text('Total : ' + total + ' CFP', 10, y + 10);
       doc.save('commande_' + client.replace(/\s+/g, '_') + '.pdf');
@@ -477,6 +677,7 @@
         return;
       }
 
+      const etats = calculerEtatsRemises();
       const commande = [];
       const inputs = document.querySelectorAll(".quantity-input");
 
@@ -489,7 +690,7 @@
             commande.push({
               produit: nettoyerNom(produit.nom),
               quantite: quantity,
-              prix: produit.prix
+              prix: prixUnitaireEffectif(produit, etats)
             });
           }
         }
@@ -507,6 +708,14 @@
       commande.forEach(item => {
         corps += `${item.produit} x ${item.quantite} = ${item.quantite * item.prix} CFP\n`;
       });
+
+      const reglesActives = REGLES_REMISE.filter(r => etats[r.id].active);
+      if (reglesActives.length > 0) {
+        corps += "\n";
+        reglesActives.forEach(r => {
+          corps += `(Remise appliquée — ${r.noteLabel} : ${etats[r.id].quantiteTotale} unités → ${r.prixRemise} CFP/unité au lieu de ${r.prixNormal} CFP)\n`;
+        });
+      }
 
       corps += `\nTotal : ${commande.reduce((sum, item) => sum + item.quantite * item.prix, 0)} CFP`;
 
